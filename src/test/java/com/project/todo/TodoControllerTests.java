@@ -198,4 +198,25 @@ public class TodoControllerTests {
                 .andExpect(status().isUnprocessableEntity());
     }
 
+    @Test
+    void should_response_no_content_when_delete_a_todo() throws Exception {
+        Todo todo = new Todo(null, "Buy milk", false);
+        todo = todoRepository.save(todo);
+
+        MockHttpServletRequestBuilder request = delete("/todos/" + todo.getId())
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void should_response_not_found_when_delete_a_non_exist_todo() throws Exception {
+        MockHttpServletRequestBuilder request = delete("/todos/123")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andExpect(status().isNotFound());
+    }
+
 }

@@ -45,4 +45,9 @@ public class TodoService {
 
         return todoRepository.save(targetUpdateTodo);
     }
+
+    public void deleteTodoById(String id) {
+        Todo targetDeleteTodo = getTodoById(id);
+        todoRepository.delete(targetDeleteTodo);
+    }
 }
