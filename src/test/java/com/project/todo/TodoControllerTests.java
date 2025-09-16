@@ -147,4 +147,24 @@ public class TodoControllerTests {
                 .andExpect(jsonPath("$.done").value(true));
     }
 
+    @Test
+    void should_return_updated_todo_and_ignore_provided_id_in_body_when_update_todo_and_request_body_has_id_() throws Exception {
+        Todo todo = new Todo(null, "Buy milk", false);
+        todo = todoRepository.save(todo);
+
+        String requestBody = """
+            { "id": "456", "text": "Buy snacks", "done": true }
+        """;
+
+        MockHttpServletRequestBuilder request = put("/todos/" + todo.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody);
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(todo.getId()))
+                .andExpect(jsonPath("$.text").value("Buy snacks"))
+                .andExpect(jsonPath("$.done").value(true));
+    }
+
 }
