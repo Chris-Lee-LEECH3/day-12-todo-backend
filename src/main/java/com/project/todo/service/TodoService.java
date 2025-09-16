@@ -21,8 +21,7 @@ public class TodoService {
         return todoRepository.findAll();
     }
 
-    public Todo createTodo(TodoDto todoDto) {
-        Todo todo = TodoMapper.toEntity(todoDto);
+    public Todo createTodo(Todo todo) {
         return todoRepository.save(todo);
     }
 

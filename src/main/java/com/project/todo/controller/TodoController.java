@@ -1,8 +1,11 @@
 package com.project.todo.controller;
 
 import com.project.todo.dto.TodoDto;
+import com.project.todo.dto.TodoDtoRequest;
+import com.project.todo.dto.mapper.TodoMapper;
 import com.project.todo.entity.Todo;
 import com.project.todo.service.TodoService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,8 +28,9 @@ public class TodoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Todo createTodo(@RequestBody TodoDto todoDto) {
-        return todoService.createTodo(todoDto);
+    public Todo createTodo(@Valid @RequestBody TodoDtoRequest todoDtorequest) {
+        Todo todo = TodoMapper.toEntity(todoDtorequest);
+        return todoService.createTodo(todo);
     }
 
 }

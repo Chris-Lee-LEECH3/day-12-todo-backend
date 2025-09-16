@@ -60,7 +60,7 @@ public class TodoControllerTests {
     }
 
     @Test
-    void should_response_a_new_todo_when_create () throws Exception {
+    void should_response_a_new_todo_when_create() throws Exception {
         Gson gson = new Gson();
         TodoDto todoDto = new TodoDto("Buy milk", false);
         String requestBody = gson.toJson(todoDto);
@@ -74,6 +74,20 @@ public class TodoControllerTests {
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.text").value("Buy milk"))
                 .andExpect(jsonPath("$.done").value(false));
+    }
+
+    @Test
+    void should_response_status_422_when_create_with_empty_text() throws Exception {
+        Gson gson = new Gson();
+        TodoDto todoDto = new TodoDto("", false);
+        String requestBody = gson.toJson(todoDto);
+
+        MockHttpServletRequestBuilder request = post("/todos")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody);
+
+        mockMvc.perform(request)
+                .andExpect(status().isUnprocessableEntity());
     }
 
 }
