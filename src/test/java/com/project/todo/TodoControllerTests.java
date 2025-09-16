@@ -18,6 +18,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import static org.hamcrest.Matchers.not;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public class TodoControllerTests {
@@ -104,6 +106,24 @@ public class TodoControllerTests {
 
         mockMvc.perform(request)
                 .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    void should_response_status_201_and_ignore_client_sent_id_when_request_body_has_id_() throws Exception {
+        String requestBody = """
+        {
+         "id": "client-sent", "text": "Buy bread", "done": false
+        }
+       """;
+
+        MockHttpServletRequestBuilder request = post("/todos")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody);
+
+        mockMvc.perform(request)
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.id").value(not("client-sent")));
     }
 
 }
