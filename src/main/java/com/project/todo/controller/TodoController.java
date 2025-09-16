@@ -1,10 +1,10 @@
 package com.project.todo.controller;
 
+import com.project.todo.dto.TodoDto;
 import com.project.todo.entity.Todo;
 import com.project.todo.service.TodoService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,6 +21,12 @@ public class TodoController {
     @GetMapping
     public List<Todo> getAllTodos() {
         return todoService.getAllTodos();
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Todo createTodo(@RequestBody TodoDto todoDto) {
+        return todoService.createTodo(todoDto);
     }
 
 }

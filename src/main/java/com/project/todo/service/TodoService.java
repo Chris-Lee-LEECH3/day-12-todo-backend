@@ -1,5 +1,7 @@
 package com.project.todo.service;
 
+import com.project.todo.dto.TodoDto;
+import com.project.todo.dto.mapper.TodoMapper;
 import com.project.todo.entity.Todo;
 import com.project.todo.repository.TodoRepository;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,11 @@ public class TodoService {
 
     public List<Todo> getAllTodos() {
         return todoRepository.findAll();
+    }
+
+    public Todo createTodo(TodoDto todoDto) {
+        Todo todo = TodoMapper.toEntity(todoDto);
+        return todoRepository.save(todo);
     }
 
 }
