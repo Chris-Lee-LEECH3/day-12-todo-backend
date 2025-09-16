@@ -2,6 +2,7 @@ package com.project.todo;
 
 import com.project.todo.entity.Todo;
 import com.project.todo.repository.TodoRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,6 +24,11 @@ public class TodoControllerTests {
 
     @Autowired
     private TodoRepository todoRepository;
+
+    @BeforeEach
+    public void setup() {
+        todoRepository.deleteAll();
+    }
 
     @Test
     void should_response_empty_list_when_index_with_no_any_todo() throws Exception {
