@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -34,6 +35,13 @@ public class TodoControllerTests {
         todoRepository.deleteAll();
     }
 
+    private MvcResult createTodo() throws Exception {
+        Todo todo = new Todo(null, "Buy milk", false);
+        Gson gson = new Gson();
+        String todoStr = gson.toJson(todo);
+        return mockMvc.perform(post("/todos").contentType(MediaType.APPLICATION_JSON).content(todoStr)).andReturn();
+    }
+
     @Test
     void should_response_empty_list_when_index_with_no_any_todo() throws Exception {
         MockHttpServletRequestBuilder request = get("/todos")
@@ -46,8 +54,7 @@ public class TodoControllerTests {
 
     @Test
     void should_response_one_todo_when_index_with_one_todo() throws Exception {
-        Todo todo = new Todo(null, "Buy milk", false);
-        todoRepository.save(todo);
+        createTodo();
 
         MockHttpServletRequestBuilder request = get("/todos")
                 .contentType(MediaType.APPLICATION_JSON);
@@ -127,8 +134,8 @@ public class TodoControllerTests {
 
     @Test
     void should_return_updated_todo_when_update_todo() throws Exception {
-        Todo todo = new Todo(null, "Buy milk", false);
-        todo = todoRepository.save(todo);
+        String json = createTodo().getResponse().getContentAsString();
+        Todo todo = new Gson().fromJson(json, Todo.class);
 
         String requestBody = """
         {
@@ -149,8 +156,8 @@ public class TodoControllerTests {
 
     @Test
     void should_return_updated_todo_and_ignore_provided_id_in_body_when_update_todo_and_request_body_has_id() throws Exception {
-        Todo todo = new Todo(null, "Buy milk", false);
-        todo = todoRepository.save(todo);
+        String json = createTodo().getResponse().getContentAsString();
+        Todo todo = new Gson().fromJson(json, Todo.class);
 
         String requestBody = """
             { "id": "456", "text": "Buy snacks", "done": true }
@@ -185,8 +192,8 @@ public class TodoControllerTests {
 
     @Test
     void should_response_status_422_when_update_todo_and_request_body_is_empty() throws Exception {
-        Todo todo = new Todo(null, "Buy milk", false);
-        todo = todoRepository.save(todo);
+        String json = createTodo().getResponse().getContentAsString();
+        Todo todo = new Gson().fromJson(json, Todo.class);
 
         String requestBody = "{}";
 
@@ -200,8 +207,8 @@ public class TodoControllerTests {
 
     @Test
     void should_response_no_content_when_delete_a_todo() throws Exception {
-        Todo todo = new Todo(null, "Buy milk", false);
-        todo = todoRepository.save(todo);
+        String json = createTodo().getResponse().getContentAsString();
+        Todo todo = new Gson().fromJson(json, Todo.class);
 
         MockHttpServletRequestBuilder request = delete("/todos/" + todo.getId())
                 .contentType(MediaType.APPLICATION_JSON);
