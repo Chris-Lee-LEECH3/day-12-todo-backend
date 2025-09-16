@@ -1,6 +1,5 @@
 package com.project.todo.controller;
 
-import com.project.todo.dto.TodoDto;
 import com.project.todo.dto.TodoDtoRequest;
 import com.project.todo.dto.mapper.TodoMapper;
 import com.project.todo.entity.Todo;
