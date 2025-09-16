@@ -1,5 +1,6 @@
 package com.project.todo.advice;
 
+import com.project.todo.exception.InvalidRequestBodyException;
 import com.project.todo.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -25,6 +26,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ExceptionResponse resourceNotFoundExceptionHandler(ResourceNotFoundException e) {
+        return new ExceptionResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(InvalidRequestBodyException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ExceptionResponse invalidRequestBodyExceptionHandler(InvalidRequestBodyException e) {
         return new ExceptionResponse(e.getMessage());
     }
 

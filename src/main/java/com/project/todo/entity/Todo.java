@@ -13,7 +13,7 @@ public class Todo {
     @Id
     private String id;
     private String text;
-    private boolean done;
+    private Boolean done;
 
     @PrePersist
     public void ensureId(){

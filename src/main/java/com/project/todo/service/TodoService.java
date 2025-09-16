@@ -1,8 +1,7 @@
 package com.project.todo.service;
 
-import com.project.todo.dto.TodoDto;
-import com.project.todo.dto.mapper.TodoMapper;
 import com.project.todo.entity.Todo;
+import com.project.todo.exception.InvalidRequestBodyException;
 import com.project.todo.exception.ResourceNotFoundException;
 import com.project.todo.repository.TodoRepository;
 import org.springframework.stereotype.Service;
@@ -32,13 +31,17 @@ public class TodoService {
     }
 
     public Todo updateTodo(String id, Todo todo) {
+        if (todo.getText() == null && todo.getDone() == null) {
+            throw new InvalidRequestBodyException("The request body is empty.");
+        }
+
         Todo targetUpdateTodo = getTodoById(id);
 
         if (todo.getText() != null) {
             targetUpdateTodo.setText(todo.getText());
         }
 
-        targetUpdateTodo.setDone(todo.isDone());
+        targetUpdateTodo.setDone(todo.getDone());
 
         return todoRepository.save(targetUpdateTodo);
     }
