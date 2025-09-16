@@ -148,7 +148,7 @@ public class TodoControllerTests {
     }
 
     @Test
-    void should_return_updated_todo_and_ignore_provided_id_in_body_when_update_todo_and_request_body_has_id_() throws Exception {
+    void should_return_updated_todo_and_ignore_provided_id_in_body_when_update_todo_and_request_body_has_id() throws Exception {
         Todo todo = new Todo(null, "Buy milk", false);
         todo = todoRepository.save(todo);
 
@@ -165,6 +165,22 @@ public class TodoControllerTests {
                 .andExpect(jsonPath("$.id").value(todo.getId()))
                 .andExpect(jsonPath("$.text").value("Buy snacks"))
                 .andExpect(jsonPath("$.done").value(true));
+    }
+
+    @Test
+    void should_response_not_found_when_update_a_non_exist_todo() throws Exception {
+        String requestBody = """
+        {
+         "text": "Buy snacks", "done": true
+        }
+       """;
+
+        MockHttpServletRequestBuilder request = put("/todos/213")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody);
+
+        mockMvc.perform(request)
+                .andExpect(status().isNotFound());
     }
 
 }

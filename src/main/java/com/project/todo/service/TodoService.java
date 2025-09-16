@@ -3,6 +3,7 @@ package com.project.todo.service;
 import com.project.todo.dto.TodoDto;
 import com.project.todo.dto.mapper.TodoMapper;
 import com.project.todo.entity.Todo;
+import com.project.todo.exception.ResourceNotFoundException;
 import com.project.todo.repository.TodoRepository;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,8 @@ public class TodoService {
     }
 
     public Todo getTodoById(String id) {
-        return todoRepository.findById(id).orElse(null);
+        return todoRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Todo not found with id: " + id));
     }
 
     public Todo createTodo(Todo todo) {
@@ -31,9 +33,6 @@ public class TodoService {
 
     public Todo updateTodo(String id, Todo todo) {
         Todo targetUpdateTodo = getTodoById(id);
-        if (targetUpdateTodo == null) {
-            return null;
-        }
 
         if (todo.getText() != null) {
             targetUpdateTodo.setText(todo.getText());
